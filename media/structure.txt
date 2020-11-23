@@ -1,4 +1,6 @@
 flowchart LR
 	A["Java-server"]
-	B["React.js"]
-	A <-->|REST| B
+	B["Java-client"]
+	C["React.js"]
+	A <-->|Sockets| B
+	B <-->|AJAX| C

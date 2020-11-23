@@ -1,10 +1,16 @@
 import model.Model;
+import java.net.*;
 
 public class TestModel {
 
 	public static void main(String[] args){
-		Model model = new Model();
-		System.out.println(model.getAttribute());
+		System.out.println("");
+		try {
+			Model model = new Model();
+			System.out.println(model.getAttribute());
+		} catch(UnknownHostException e){
+			e.printStackTrace();
+		}
 	}
 
 }
