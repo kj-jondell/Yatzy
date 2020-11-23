@@ -1,0 +1,6 @@
+flowchart LR
+	A["Java"]
+	B["Python"]
+	C["React.js"]
+	A -->|REST| B
+	B <-->|REST| C
