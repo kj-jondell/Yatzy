@@ -1,0 +1,3 @@
+# YATZY
+
+## Structure
