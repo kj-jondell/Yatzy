@@ -36,29 +36,36 @@ public class Model {
 				System.out.println(String.format("Value of die no. %d: %d", index+1, dice[index].getValue()));
 			}
 		}
-		// printAllUpperSectionPoints();
-		Rules.getLowerSectionPoints(dice, "Two Pair");
-		Rules.getLowerSectionPoints(dice, "One Pair");
-		Rules.getLowerSectionPoints(dice, "Full House");
-		Rules.getLowerSectionPoints(dice, "Three of a kind");
-		Rules.getLowerSectionPoints(dice, "Four of a kind");
-		Rules.getLowerSectionPoints(dice, "Yatzy");
 	}
 
-	private void printAllUpperSectionPoints(){
-		String[] helper = {"ones", "twos", "threes", "fours", "fives", "sixes"};
-		for (int i = 1; i <= 6; i++) {
-			System.out.println(String.format("You get %d points if you put this for %s", Rules.getUpperSectionPoints(dice, i), helper[i-1]));
+	public int getPointsForDice(String checkType){
+		try {
+			int points = Dice.getLowerSectionPoints(dice, checkType);
+			if(points>0)
+				return points;
+		} catch (NullPointerException e){
+			System.err.println(String.format("Unknown type: %s", checkType));
 		}
+		return 0;
 	}
+
+	// private void printAllUpperSectionPoints(){
+	// 	String[] helper = {"ones", "twos", "threes", "fours", "fives", "sixes"};
+	// 	for (int i = 1; i <= 6; i++) {
+	// 		System.out.println(String.format("You get %d points if you put this for %s", Dice.getUpperSectionPoints(dice, i), helper[i-1]));
+	// 	}
+	// }
 
 }
 
-class Rules {
+class Dice {
 
 	// TODO static class or regular...?
 
-	private static Map<String, int[]> pairs = Map.of(
+	private final static Map<String, int[]> PAIRS = Map.of(
+		/* Name, [Start value, End value]*/
+		"Small Straight", new int[]{1, 5},
+		"Large Straight", new int[]{2, 6},
 		/* Name, [First demand, Second demand]*/
 		"One Pair", new int[]{2, 0},
 		"Two Pair", new int[]{2, 2},
@@ -98,41 +105,11 @@ class Rules {
 	}
 
 	/**
-	 * 
+	 * Sums the points by the dice given in the array.
+	 * Used also for chance.
 	 * @param dice
-	 * @param type
 	 * @return
 	 */
-	static int getLowerSectionPoints(Die[] dice, String type){
-		//TODO throw error if uncorrect key given??
-		int rulePairs[] = Rules.pairs.get(type);
-		int firstSizeDemand = rulePairs[0], secondSizeDemand = rulePairs[1];
-
-		Map<Integer, Integer> countOfValues = getCountOfValuesMap(dice);
-		
-		List<Die> firstDieCollection = new ArrayList<Die>(), secondDieCollection = new ArrayList<Die>();
-		while(countOfValues.size() > 0){
-			int largestDieValue = Collections.max(countOfValues.keySet()); 
-			int count = countOfValues.get(largestDieValue);
-			if(count >= firstSizeDemand && firstDieCollection.isEmpty())  
-				for (int i = 0; i < firstSizeDemand; i++) 
-					firstDieCollection.add(new Die(largestDieValue));
-			else if(count >= secondSizeDemand && secondDieCollection.isEmpty())
-				for (int i = 0; i < secondSizeDemand; i++) 
-					secondDieCollection.add(new Die(largestDieValue));
-			countOfValues.remove(largestDieValue);
-		}
-
-		int points = 0;
-		if ((firstSizeDemand == 0 || firstDieCollection.size() > 0) && (secondSizeDemand == 0 || secondDieCollection.size() > 0)) { // both demands must be met...
-			firstDieCollection.addAll(secondDieCollection);
-			Die[] pointDice = firstDieCollection.toArray(new Die[firstDieCollection.size()]);
-			points = getSumOfDice(pointDice);
-		}
-
-		return points;
-	}
-	
 	static int getSumOfDice(Die[] dice){
 		int points = 0;
 		for (Die die : dice) {
@@ -144,11 +121,53 @@ class Rules {
 	/**
 	 * 
 	 * @param dice
+	 * @param type
+	 * @return
+	 */
+	static int getLowerSectionPoints(Die[] dice, String type) throws NullPointerException {
+		int points = 0;
+		Map<Integer, Integer> countOfValues = getCountOfValuesMap(dice);
+		int rulePairs[] = Dice.PAIRS.get(type);
+
+		if(type.contains("Straight")){ // checks first whether type is straight or not...
+			for (int value = rulePairs[0]; value <= rulePairs[1]; value++) //first argument is start value, second is end value
+				if(!countOfValues.keySet().contains(value))
+					return 0;
+				else points += value;
+
+			return points;
+		}
+		else {
+			List<Die> firstDieCollection = new ArrayList<Die>(), secondDieCollection = new ArrayList<Die>();
+			while(countOfValues.size() > 0){
+				int largestDieValue = Collections.max(countOfValues.keySet()); 
+				int count = countOfValues.get(largestDieValue);
+				if(count >= rulePairs[0] && firstDieCollection.isEmpty())  //first argument is first size demand, second is second size demand
+					for (int i = 0; i < rulePairs[0]; i++) 
+						firstDieCollection.add(new Die(largestDieValue));
+				else if(count >= rulePairs[1] && secondDieCollection.isEmpty())
+					for (int i = 0; i < rulePairs[1]; i++) 
+						secondDieCollection.add(new Die(largestDieValue));
+				countOfValues.remove(largestDieValue);
+			}
+			if ((rulePairs[0] == 0 || firstDieCollection.size() > 0) && (rulePairs[1] == 0 || secondDieCollection.size() > 0)) { // both demands must be met...
+				firstDieCollection.addAll(secondDieCollection);
+				Die[] pointDice = firstDieCollection.toArray(new Die[firstDieCollection.size()]);
+				points = getSumOfDice(pointDice);
+			}
+		}
+
+		return points;
+	}
+	
+	/**
+	 * 
+	 * @param dice
 	 * @param value
 	 * @return points of the given value
 	 */
 	static int getUpperSectionPoints(Die[] dice, int value){
-		return Rules.getSumOfDice(Rules.getListOfValue(dice, value));
+		return Dice.getSumOfDice(Dice.getListOfValue(dice, value));
 	}
 
 } 
