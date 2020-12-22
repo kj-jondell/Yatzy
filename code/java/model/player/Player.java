@@ -6,9 +6,16 @@ public class Player {
 
     private int totalPoints;
 
-    public Player(){
+    public Player() {
         Protocol protocol = new Protocol();
+    }
 
+    public int getTotalPoints() {
+        return totalPoints;
+    }
+
+    public void setTotalPoints(int totalPoints) {
+        this.totalPoints = totalPoints;
     }
     
 }

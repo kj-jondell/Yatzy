@@ -22,7 +22,7 @@ Java...
 # About this project
 This project has the following objectives:
 
-* To learn about P2P-programming/Server and Sockets/backend-programming in Java.
+* To learn about WebSockets!/Server and Sockets/backend-programming in Java.
 * To connect different systems (React.js/Java/Python) over network. 
 * To improve (Python-)code from 1st year project (P-uppgift).
 * To have fun!

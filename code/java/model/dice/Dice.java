@@ -29,7 +29,12 @@ public class Dice {
         this.dice = new Die[amtDice];
 		for (int index = 0; index < this.dice.length; index++) 
 			this.dice[index] = new Die();
-    }
+	}
+	
+	public void printDice(){
+		for (Die die : dice)
+			System.out.println(String.format("Die has value: %d", die.getValue()));
+	}
 
 	/**
 	 * Throws all available dice
