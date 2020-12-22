@@ -22,19 +22,11 @@ Java...
 # About this project
 This project has the following objectives:
 
-<<<<<<< HEAD
-* To learn about P2P-programming/Server and Sockets/backend-programming in Java. UDP/TCP-datagrams
-=======
 * To learn about P2P-programming/Server and Sockets/backend-programming in Java.
->>>>>>> 3ada78d114a0b22973dfdb4e782be450e1ce91c9
 * To connect different systems (React.js/Java/Python) over network. 
 * To improve (Python-)code from 1st year project (P-uppgift).
 * To have fun!
 
 ## TODO
 * Plan project (how many hours...), maybe even Gantt...
-<<<<<<< HEAD
 	* Architecture, parts, etc.
-=======
-	* Architecture, parts, etc.
->>>>>>> 3ada78d114a0b22973dfdb4e782be450e1ce91c9
